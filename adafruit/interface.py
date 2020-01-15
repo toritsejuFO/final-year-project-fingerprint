@@ -95,13 +95,13 @@ class AdafruitFingerprint:
     # to upload the character file or template of CharBuffer1/CharBuffer2 to upper computer
     def up_char(self, buffer):
         data = [0x08, buffer]
-        self.package.write(data=data, show=True)
+        self.package.write(data=data, show=False)
 
-        serial_data = self.package.read(show=True)
+        serial_data = self.package.read(show=False)
         if len(serial_data):
             package_content = serial_data[4]
             if package_content == FINGERPRINT_OK:
-                template = self.package.read_template(show=True)
+                template = self.package.read_template(show=False)
                 return FINGERPRINT_OK, template
             elif package_content == FINGERPRINT_PACKETRECEIVER:
                 return FINGERPRINT_PACKETRECEIVER
@@ -115,13 +115,13 @@ class AdafruitFingerprint:
     # buffer of Module
     def down_char(self, buffer, template):
         data = [0x09, buffer]
-        self.package.write(data=data, show=True)
+        self.package.write(data=data, show=False)
 
-        serial_data = self.package.read(show=True)
+        serial_data = self.package.read(show=False)
         if len(serial_data):
             package_content = serial_data[4]
             if package_content == FINGERPRINT_OK:
-                self.package.write_template(data=template, show=True)
+                self.package.write_template(data=template, show=False)
                 return FINGERPRINT_OK
             elif package_content == FINGERPRINT_PACKETRECEIVER:
                 return FINGERPRINT_PACKETRECEIVER
@@ -135,9 +135,9 @@ class AdafruitFingerprint:
     # location of Flash library
     def store(self, buffer, page):
         data = [0x06, buffer, 0x00, page]
-        self.package.write(data=data, show=True)
+        self.package.write(data=data, show=False)
 
-        serial_data = self.package.read(show=True)
+        serial_data = self.package.read(show=False)
         if len(serial_data):
             package_content = serial_data[4]
             if package_content == FINGERPRINT_OK:
@@ -156,9 +156,9 @@ class AdafruitFingerprint:
     # CharBuffer1 or CharBuffer2. When found, PageID will be returned
     def search(self, buffer, page_start, page_num):
         data = [0x04, buffer, 0x00, page_start, 0x00, page_num]
-        self.package.write(data=data, show=True)
+        self.package.write(data=data, show=False)
 
-        serial_data = self.package.read(show=True)
+        serial_data = self.package.read(show=False)
         if len(serial_data):
             package_content = serial_data[4]
             if package_content == FINGERPRINT_OK:
