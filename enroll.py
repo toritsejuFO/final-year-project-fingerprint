@@ -27,45 +27,37 @@ def enroll_fingerprint(finger):
             sys.stdout.flush()
         elif resp is FINGERPRINT_PACKETRECEIVER:
             print('Communication error')
-            # sys.exit()
             return False
         elif resp is FINGERPRINT_IMAGEFAIL:
             print('Imaging Error')
-            # sys.exit()
             return False
         else:
             print('Unknown Error')
-            # sys.exit()
             return False
     
-    resp = finger.img_2tz(buffer_id=CHAR_BUFF_1)
+    resp = finger.img_2tz(buffer=CHAR_BUFF_1)
     if resp is FINGERPRINT_OK:
         print('Image Converted')
         sys.stdout.flush() 
     elif resp is FINGERPRINT_IMAGEMESS:
         print('Image too messy')
-        # sys.exit()
         return False
     elif resp is FINGERPRINT_PACKETRECEIVER:
         print('Communication error')
-        # sys.exit()
         return False
     elif resp is FINGERPRINT_FEATUREFAIL:
         print('Could not find fingerprint features')
-        # sys.exit()
         return False
     elif resp is FINGERPRINT_INVALIDIMAGE:
         print('Could not find fingerprint features')
-        # sys.exit()
         return False
     else:
         print('Unknown Error')
-        # sys.exit()
         return False
 
     # Ensure finger has been removed
     print('Remove finger')
-    sleep(2)
+    sleep(1)
     resp = -1
     while (resp is not FINGERPRINT_NOFINGER):
         resp = finger.gen_img()
@@ -86,41 +78,33 @@ def enroll_fingerprint(finger):
             sys.stdout.flush()
         elif resp is FINGERPRINT_PACKETRECEIVER:
             print('Communication error')
-            # sys.exit()
             return False
         elif resp is FINGERPRINT_IMAGEFAIL:
             print('Imaging Error')
-            # sys.exit()
             return False
         else:
             print('Unknown Error')
-            # sys.exit()
             return False
     
-    resp = finger.img_2tz(buffer_id=CHAR_BUFF_2)
+    resp = finger.img_2tz(buffer=CHAR_BUFF_2)
     sleep(0.1)
     if resp is FINGERPRINT_OK:
         print('Image Converted')
         sys.stdout.flush() 
     elif resp is FINGERPRINT_IMAGEMESS:
         print('Image too messy')
-        # sys.exit()
         return False
     elif resp is FINGERPRINT_PACKETRECEIVER:
         print('Communication error')
-        # sys.exit()
         return False
     elif resp is FINGERPRINT_FEATUREFAIL:
         print('Could not find fingerprint features')
-        # sys.exit()
         return False
     elif resp is FINGERPRINT_INVALIDIMAGE:
         print('Could not find fingerprint features')
-        # sys.exit()
         return False
     else:
         print('Unknown Error')
-        # sys.exit()
         return False
 
     print('Remove finger')
@@ -135,12 +119,21 @@ def enroll_fingerprint(finger):
         sys.stdout.flush()
     if resp is FINGERPRINT_PACKETRECEIVER:
         print('Communication error')
-        # sys.exit()
         return False
     if resp is FINGERPRINT_ENROLLMISMATCH:
         print('Prints did not match')
-        # sys.exit()
         return False
-    
-    print('Enrollment done!\n')
-    sys.stdout.flush()
+
+    resp = finger.up_char(buffer=CHAR_BUFF_2)
+    sleep(0.1)
+    if isinstance(resp, tuple) and len(resp) == 2 and resp[0] is FINGERPRINT_OK:
+        print('Template created successfully!')
+        print('Enrollment done!\n')
+        sys.stdout.flush()
+        return resp[1]
+    if resp is FINGERPRINT_PACKETRECEIVER:
+        print('Communication error')
+        return False
+    if resp is FINGERPRINT_TEMPLATEUPLOADFAIL:
+        print('Template upload error')
+        return False
